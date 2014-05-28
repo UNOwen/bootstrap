@@ -564,6 +564,7 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
 
       scope.$watch('isOpen', function(value) {
         if (value) {
+          ensurePopupCompiled();
           scope.$broadcast('datepicker.focus');
           scope.position = appendToBody ? $position.offset(element) : $position.position(element);
           scope.position.top = scope.position.top + element.prop('offsetHeight');
@@ -592,15 +593,23 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
         element[0].focus();
       };
 
-      var $popup = $compile(popupEl)(scope);
-      if ( appendToBody ) {
-        $document.find('body').append($popup);
-      } else {
-        element.after($popup);
+      var $popup;
+      function ensurePopupCompiled() {
+        if (!angular.isUndefined($popup)) {
+          return;
+        }
+        $popup = $compile(popupEl)(scope);
+        if ( appendToBody ) {
+          $document.find('body').append($popup);
+        } else {
+          element.after($popup);
+        }
       }
 
       scope.$on('$destroy', function() {
-        $popup.remove();
+        if (!angular.isUndefined($popup)) {
+          $popup.remove();
+        }
         element.unbind('keydown', keydown);
         $document.unbind('click', documentClickBind);
       });
