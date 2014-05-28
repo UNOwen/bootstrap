@@ -596,7 +596,7 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
       var $popup;
       function ensurePopupCompiled() {
         if (!angular.isUndefined($popup)) {
-          return;
+          return ;
         }
         $popup = $compile(popupEl)(scope);
         if ( appendToBody ) {
